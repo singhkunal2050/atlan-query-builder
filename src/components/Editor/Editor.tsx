@@ -8,27 +8,37 @@ export function Editor() {
     console.log("Editor value:", value)
   }
 
+  const defaultValue = `SELECT * FROM customers LIMIT 10;`
+
   return (
-    <div className="h-full flex flex-col">
-      <div className="border-b px-4 py-2 text-sm text-muted-foreground">
-        SQL Editor
+    <div className="h-full flex flex-col bg-background">
+      <div className="border-b px-4 py-2 flex items-center justify-between bg-muted/30">
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">SQL Editor</span>
+        <span className="text-xs text-muted-foreground">Press Cmd+Enter to run</span>
       </div>
       <div className="flex-1">
         <MonacoEditor
           height="100%"
           language="sql"
           theme={theme === "dark" ? "vs-dark" : "vs-light"}
+          defaultValue={defaultValue}
           onChange={handleEditorChange}
           options={{
             minimap: { enabled: false },
-            fontSize: 14,
+            fontSize: 13,
             lineNumbers: "on",
             scrollBeyondLastLine: false,
             automaticLayout: true,
+            padding: { top: 16, bottom: 16 },
+            lineHeight: 20,
+            fontFamily: "'JetBrains Mono', 'Fira Code', 'Consolas', monospace",
+            scrollbar: {
+              verticalScrollbarSize: 8,
+              horizontalScrollbarSize: 8,
+            },
           }}
         />
       </div>
     </div>
   )
 }
-

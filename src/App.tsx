@@ -1,6 +1,6 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Button } from "@/components/ui/button"
-import { Play } from "lucide-react"
+import { Play, Download } from "lucide-react"
 import { Editor } from "@/components/Editor/Editor"
 import { ResultsTable } from "@/components/Table/ResultsTable"
 import { QuerySelector } from "@/components/QuerySelector/QuerySelector"
@@ -11,33 +11,37 @@ function App() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <div className="h-screen flex flex-col">
       {/* Header */}
-      <header className="border-b px-4 py-3 flex items-center gap-4">
-        <h1 className="text-lg font-semibold">SQL Query Builder</h1>
-        <div className="flex-1">
-          <QuerySelector />
+      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 items-center px-4 gap-4">
+          <h1 className="text-sm font-semibold">SQL Query Builder</h1>
+          <div className="flex-1 flex items-center gap-3">
+            <QuerySelector />
+          </div>
+          <div className="flex items-center gap-2">
+            <Button onClick={handleRunQuery} size="sm" className="gap-2">
+              <Play className="h-3.5 w-3.5" />
+              Run Query
+            </Button>
+            <Button variant="outline" size="sm" className="gap-2">
+              <Download className="h-3.5 w-3.5" />
+              Export
+            </Button>
+          </div>
         </div>
-        <Button onClick={handleRunQuery} size="sm">
-          <Play className="h-4 w-4 mr-2" />
-          Run Query
-        </Button>
       </header>
 
-      {/* Main Content - Resizable Panels */}
+      {/* Main Content */}
       <ResizablePanelGroup direction="vertical" className="flex-1">
         <ResizablePanel defaultSize={60} minSize={30}>
-          <div className="h-full">
-            <Editor />
-          </div>
+          <Editor />
         </ResizablePanel>
         
-        <ResizableHandle withHandle />
+        <ResizableHandle withHandle className="bg-border hover:bg-accent transition-colors" />
         
         <ResizablePanel defaultSize={40} minSize={20}>
-          <div className="h-full">
-            <ResultsTable />
-          </div>
+          <ResultsTable />
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
