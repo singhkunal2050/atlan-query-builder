@@ -1,9 +1,9 @@
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
-import { setSortColumn, setSearchTerm, setCurrentPage, setPageSize } from "@/store/slices/resultsSlice"
+import { setSortColumn, setSearchTerm, setCurrentPage, setPageSize, setViewMode } from "@/store/slices/resultsSlice"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ArrowUpDown, ArrowUp, ArrowDown, Search, Loader2 } from "lucide-react"
+import { ArrowUpDown, ArrowUp, ArrowDown, Search, Loader2, List, Layers } from "lucide-react"
 import { useMemo, useCallback } from "react"
 import {
   Select,
@@ -13,10 +13,11 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { PAGINATION } from "@/lib/constants"
+import { VirtualTable } from "./VirtualTable"
 
 export function ResultsTable() {
   const dispatch = useAppDispatch()
-  const { data, loading, error, sortColumn, sortDirection, searchTerm, currentPage, pageSize } =
+  const { data, loading, error, sortColumn, sortDirection, searchTerm, currentPage, pageSize, viewMode } =
     useAppSelector(state => state.results)
 
   const filteredAndSortedData = useMemo(() => {
@@ -75,6 +76,10 @@ export function ResultsTable() {
     dispatch(setPageSize(Number(size)))
   }, [dispatch])
 
+  const toggleViewMode = useCallback(() => {
+    dispatch(setViewMode(viewMode === 'paginated' ? 'virtual' : 'paginated'))
+  }, [dispatch, viewMode])
+
   if (loading) {
     return (
       <div className="h-full flex flex-col bg-background">
@@ -124,6 +129,46 @@ export function ResultsTable() {
     )
   }
 
+  // If virtual mode, render VirtualTable
+  if (viewMode === 'virtual') {
+    return (
+      <div className="h-full flex flex-col bg-background">
+        {/* Header */}
+        <div className="border-b px-3 sm:px-4 py-2 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:justify-between bg-muted/30">
+          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Query Results</span>
+            <span className="text-xs text-muted-foreground">
+              {data.rowCount} {data.rowCount === 1 ? 'row' : 'rows'}
+              {data.executionTime && <span className="hidden sm:inline"> • {data.executionTime}ms</span>}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="relative flex-1 sm:flex-none">
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="h-7 pl-7 pr-2 text-xs w-full sm:w-[150px]"
+              />
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleViewMode}
+              className="h-7 px-2 text-xs gap-1"
+              title="Switch to Paginated View"
+            >
+              <List className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Paginated</span>
+            </Button>
+          </div>
+        </div>
+        <VirtualTable />
+      </div>
+    )
+  }
+
   return (
       <div className="h-full flex flex-col bg-background">
         {/* Header */}
@@ -145,6 +190,16 @@ export function ResultsTable() {
                 className="h-7 pl-7 pr-2 text-xs w-full sm:w-[150px]"
               />
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleViewMode}
+              className="h-7 px-2 text-xs gap-1"
+              title="Switch to Virtual View"
+            >
+              <Layers className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Virtual</span>
+            </Button>
           </div>
         </div>
 

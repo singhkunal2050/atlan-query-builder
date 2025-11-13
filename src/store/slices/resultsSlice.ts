@@ -17,6 +17,7 @@ interface ResultsState {
   searchTerm: string
   currentPage: number
   pageSize: number
+  viewMode: 'paginated' | 'virtual'
 }
 
 const initialState: ResultsState = {
@@ -28,6 +29,7 @@ const initialState: ResultsState = {
   searchTerm: '',
   currentPage: 1,
   pageSize: PAGINATION.DEFAULT_PAGE_SIZE,
+  viewMode: 'paginated',
 }
 
 const resultsSlice = createSlice({
@@ -74,6 +76,10 @@ const resultsSlice = createSlice({
       state.pageSize = action.payload
       state.currentPage = 1
     },
+    setViewMode: (state, action: PayloadAction<'paginated' | 'virtual'>) => {
+      state.viewMode = action.payload
+      state.currentPage = 1
+    },
   },
 })
 
@@ -86,6 +92,7 @@ export const {
   setSearchTerm,
   setCurrentPage,
   setPageSize,
+  setViewMode,
 } = resultsSlice.actions
 
 export default resultsSlice.reducer

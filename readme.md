@@ -167,12 +167,19 @@ build: {
 - Quick re-run from history
 - Auto-saves in Redux state
 
-### **4. Results Table**
-- **Sorting**: Click column headers (ascending/descending)
+### **4. Results Table (Two Modes)**
+
+**Paginated Mode** (Default):
 - **Pagination**: 25/50/100/200 rows per page
+- **Sorting**: Click column headers (ascending/descending)
 - **Search**: Real-time filter across all columns
-- **Horizontal Scroll**: Handles wide tables gracefully
 - **Export**: CSV or JSON download
+
+**Virtual Mode** (For Large Datasets):
+- **Virtual Scrolling**: Renders only visible rows using TanStack Virtual
+- **Handles 10,000+ rows** smoothly without pagination
+- **Sorting & Search**: Works on full dataset
+- Toggle between modes with button in header
 
 ### **5. Keyboard Shortcuts**
 | Action | macOS | Windows/Linux |
