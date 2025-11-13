@@ -1,33 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+import { Button } from "@/components/ui/button"
+import { Play } from "lucide-react"
+import { Editor } from "@/components/Editor/Editor"
+import { ResultsTable } from "@/components/Table/ResultsTable"
+import { QuerySelector } from "@/components/QuerySelector/QuerySelector"
 
 function App() {
-  const [count, setCount] = useState(0)
+  const handleRunQuery = () => {
+    console.log("Run query")
+  }
 
   return (
-    <>
-      <div className='bg-red-500'>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="h-screen flex flex-col bg-background">
+      {/* Header */}
+      <header className="border-b px-4 py-3 flex items-center gap-4">
+        <h1 className="text-lg font-semibold">SQL Query Builder</h1>
+        <div className="flex-1">
+          <QuerySelector />
+        </div>
+        <Button onClick={handleRunQuery} size="sm">
+          <Play className="h-4 w-4 mr-2" />
+          Run Query
+        </Button>
+      </header>
+
+      {/* Main Content - Resizable Panels */}
+      <ResizablePanelGroup direction="vertical" className="flex-1">
+        <ResizablePanel defaultSize={60} minSize={30}>
+          <div className="h-full">
+            <Editor />
+          </div>
+        </ResizablePanel>
+        
+        <ResizableHandle withHandle />
+        
+        <ResizablePanel defaultSize={40} minSize={20}>
+          <div className="h-full">
+            <ResultsTable />
+          </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </div>
   )
 }
 
