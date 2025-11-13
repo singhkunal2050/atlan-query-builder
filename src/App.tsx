@@ -1,12 +1,13 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Button } from "@/components/ui/button"
-import { Play, Download, FileJson, FileSpreadsheet } from "lucide-react"
+import { Play, Download, FileJson, FileSpreadsheet, Moon, Sun } from "lucide-react"
 import { Editor } from "@/components/Editor/Editor"
 import { ResultsTable } from "@/components/Table/ResultsTable"
 import { QuerySelector } from "@/components/QuerySelector/QuerySelector"
 import { ShortcutsDialog, type ShortcutsDialogRef } from "@/components/ShortcutsDialog/ShortcutsDialog"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts"
+import { useTheme } from "@/hooks/useTheme"
 import { executeQuery } from "@/lib/queryEngine"
 import { clearResults } from "@/store/slices/resultsSlice"
 import { useRef } from "react"
@@ -23,6 +24,7 @@ function App() {
   const results = useAppSelector(state => state.results.data)
   const loading = useAppSelector(state => state.results.loading)
   const shortcutsRef = useRef<ShortcutsDialogRef>(null)
+  const { theme, toggleTheme } = useTheme()
 
   const handleRunQuery = async () => {
     await executeQuery(currentSql, dispatch)
@@ -114,6 +116,9 @@ function App() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            <Button variant="ghost" size="sm" onClick={toggleTheme}>
+              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </Button>
             <ShortcutsDialog ref={shortcutsRef} />
           </div>
         </div>
@@ -128,6 +133,7 @@ function App() {
             onExportJSON={handleExportJSON}
             onClearResults={handleClearResults}
             onShowHelp={() => shortcutsRef.current?.toggle()}
+            theme={theme}
           />
         </ResizablePanel>
 

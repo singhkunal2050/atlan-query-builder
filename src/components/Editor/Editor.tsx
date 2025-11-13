@@ -1,5 +1,4 @@
 import MonacoEditor, { type OnMount } from "@monaco-editor/react"
-import { useTheme } from "@/hooks/useTheme"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { setCurrentSql } from "@/store/slices/querySlice"
 import { EDITOR_CONFIG } from "@/lib/constants"
@@ -10,10 +9,10 @@ interface EditorProps {
   onExportJSON?: () => void
   onClearResults?: () => void
   onShowHelp?: () => void
+  theme: "light" | "dark"
 }
 
-export function Editor({ onRunQuery, onExportCSV, onExportJSON, onClearResults, onShowHelp }: EditorProps) {
-  const { theme } = useTheme()
+export function Editor({ onRunQuery, onExportCSV, onExportJSON, onClearResults, onShowHelp, theme }: EditorProps) {
   const dispatch = useAppDispatch()
   const currentSql = useAppSelector(state => state.query.currentSql)
 
