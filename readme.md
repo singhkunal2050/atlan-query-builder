@@ -32,7 +32,7 @@ npm run dev
 npm run build
 ```
 
-**Live Demo:** [https://your-app.vercel.app](YOUR_VERCEL_URL_HERE)
+**Live Demo:** [https://atlan-query-builder.netlify.app/](https://atlan-query-builder.netlify.app/)
 
 ---
 
@@ -130,18 +130,12 @@ build: {
     output: {
       manualChunks: {
         'monaco': ['@monaco-editor/react', 'monaco-editor'],
-        'vendor': ['react', 'react-dom', 'react-redux'],
-        'table': ['@tanstack/react-table'],
-        'ui': ['lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
       },
     },
   },
 }
 ```
 - Separates Monaco editor into own chunk (loaded lazily)
-- Vendor chunk for React core (cached by browser)
-- UI components in separate chunk for better caching
-- Enables parallel downloads and efficient browser caching
 
 ---
 
@@ -152,7 +146,7 @@ build: {
 - Syntax highlighting for SQL
 - Auto-completion (basic)
 - Multi-line editing
-- Line numbers & minimap
+- Line numbers
 
 ### **2. Predefined Queries**
 5 optimized queries using Northwind dataset:
@@ -268,7 +262,7 @@ The application uses **pagination** to handle large query results:
 
 ## 🚀 Deployment
 
-**Platform**: Vercel
+**Platform**: Netlify
 
 **Build Command**: `npm run build`
 
@@ -283,7 +277,6 @@ The application uses **pagination** to handle large query results:
 4. Preview deployments for PRs
 
 **Optimizations Enabled:**
-- Brotli compression
 - Edge caching for static assets
 - Automatic HTTPS
 - Global CDN distribution
@@ -314,17 +307,6 @@ The application uses **pagination** to handle large query results:
 
 ---
 
-## 🙏 Acknowledgments
-
-Built with ❤️ for the Atlan Frontend Engineering Task.
-
-**Special Thanks:**
-- **Atlan Team** - For the detailed requirements
-- **TanStack** - For incredible table/virtual libraries
-- **shadcn** - For beautiful, accessible components
-- **Vercel** - For seamless deployment
-
----
 
 ## 📄 License
 
@@ -336,8 +318,6 @@ MIT License - Free to use, modify, and distribute.
 
 **Developer**: [Your Name]  
 **GitHub**: [@singhkunal2050](https://github.com/singhkunal2050)  
-**Email**: your.email@example.com  
-**Portfolio**: [yourportfolio.com](https://yourportfolio.com)
 
 ---
 
