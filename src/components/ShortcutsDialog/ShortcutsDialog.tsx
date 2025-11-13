@@ -45,7 +45,9 @@ export const ShortcutsDialog = forwardRef<ShortcutsDialogRef>((_, ref) => {
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm" className="gap-2">
           <HelpCircle className="h-4 w-4" />
-          <span className="text-xs">Help</span>
+          <span>
+            Help <span className="text-xs">({KEYBOARD_SHORTCUTS.SHOW_HELP.mac})</span>
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
