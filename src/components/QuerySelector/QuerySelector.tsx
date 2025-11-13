@@ -8,37 +8,41 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ChevronDown } from "lucide-react"
-import { useState } from "react"
-
-const queries = [
-  { id: "all-customers", name: "All Customers" },
-  { id: "recent-orders", name: "Recent Orders" },
-  { id: "product-inventory", name: "Product Inventory" },
-  { id: "employee-list", name: "Employee List" },
-  { id: "top-products", name: "Top Products" },
-]
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { selectPredefinedQuery } from "@/store/slices/querySlice"
 
 export function QuerySelector() {
-  const [selected, setSelected] = useState(queries[0])
+  const dispatch = useAppDispatch()
+  const predefinedQueries = useAppSelector(state => state.query.predefinedQueries)
+  const selectedQueryId = useAppSelector(state => state.query.selectedQueryId)
+
+  const selectedQuery = predefinedQueries.find(q => q.id === selectedQueryId)
+
+  const handleSelect = (queryId: string) => {
+    dispatch(selectPredefinedQuery(queryId))
+  }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2 min-w-[200px] justify-between">
-          <span className="text-sm">{selected.name}</span>
+          <span className="text-sm">{selectedQuery?.name || 'Select Query'}</span>
           <ChevronDown className="h-4 w-4 opacity-50" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-[200px]">
+      <DropdownMenuContent align="start" className="w-[250px]">
         <DropdownMenuLabel>Predefined Queries</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {queries.map((query) => (
+        {predefinedQueries.map((query) => (
           <DropdownMenuItem
             key={query.id}
-            onClick={() => setSelected(query)}
-            className="cursor-pointer"
+            onClick={() => handleSelect(query.id)}
+            className="cursor-pointer flex flex-col items-start"
           >
-            {query.name}
+            <span className="font-medium">{query.name}</span>
+            {query.description && (
+              <span className="text-xs text-muted-foreground">{query.description}</span>
+            )}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

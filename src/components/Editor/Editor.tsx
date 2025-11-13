@@ -1,14 +1,16 @@
 import MonacoEditor from "@monaco-editor/react"
 import { useTheme } from "@/hooks/useTheme"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { setCurrentSql } from "@/store/slices/querySlice"
 
 export function Editor() {
   const { theme } = useTheme()
+  const dispatch = useAppDispatch()
+  const currentSql = useAppSelector(state => state.query.currentSql)
 
   const handleEditorChange = (value: string | undefined) => {
-    console.log("Editor value:", value)
+    dispatch(setCurrentSql(value || ''))
   }
-
-  const defaultValue = `SELECT * FROM customers LIMIT 10;`
 
   return (
     <div className="h-full flex flex-col bg-background">
@@ -21,7 +23,7 @@ export function Editor() {
           height="100%"
           language="sql"
           theme={theme === "dark" ? "vs-dark" : "vs-light"}
-          defaultValue={defaultValue}
+          value={currentSql}
           onChange={handleEditorChange}
           options={{
             minimap: { enabled: false },
