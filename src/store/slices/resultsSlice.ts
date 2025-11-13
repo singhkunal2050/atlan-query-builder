@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { PAGINATION } from '@/lib/constants'
 
 export interface QueryResult {
   columns: string[]
@@ -26,7 +27,7 @@ const initialState: ResultsState = {
   sortDirection: 'asc',
   searchTerm: '',
   currentPage: 1,
-  pageSize: 50,
+  pageSize: PAGINATION.DEFAULT_PAGE_SIZE,
 }
 
 const resultsSlice = createSlice({

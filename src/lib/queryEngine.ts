@@ -3,21 +3,7 @@ import { setLoading, setResults, setError } from '@/store/slices/resultsSlice'
 import { addToHistory } from '@/store/slices/querySlice'
 import type { AppDispatch } from '@/store/store'
 import type { QueryResult } from '@/store/slices/resultsSlice'
-
-// CSV file mappings
-const csvFiles: Record<string, string> = {
-  customers: '/data/customers.csv',
-  orders: '/data/orders.csv',
-  products: '/data/products.csv',
-  employees: '/data/employees.csv',
-  order_details: '/data/order_details.csv',
-  categories: '/data/categories.csv',
-  shippers: '/data/shippers.csv',
-  suppliers: '/data/suppliers.csv',
-  territories: '/data/territories.csv',
-  regions: '/data/regions.csv',
-  employee_territories: '/data/employee_territories.csv',
-}
+import { CSV_FILES, QUERY_EXECUTION } from '@/lib/constants'
 
 // Simple SQL parser to extract table name
 function parseTableName(sql: string): string | null {
@@ -27,7 +13,7 @@ function parseTableName(sql: string): string | null {
 
 // Load CSV data
 async function loadCSV(tableName: string): Promise<any[]> {
-  const csvPath = csvFiles[tableName]
+  const csvPath = CSV_FILES[tableName]
   if (!csvPath) {
     throw new Error(`Table '${tableName}' not found`)
   }
@@ -53,7 +39,7 @@ export async function executeQuery(sql: string, dispatch: AppDispatch): Promise<
 
   try {
     // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 300))
+    await new Promise(resolve => setTimeout(resolve, QUERY_EXECUTION.SIMULATED_DELAY_MS))
 
     // Parse table name
     const tableName = parseTableName(sql)

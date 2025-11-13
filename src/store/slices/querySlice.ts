@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { PREDEFINED_QUERIES, QUERY_EXECUTION } from '@/lib/constants'
 
 export interface PredefinedQuery {
   id: string
@@ -20,40 +21,9 @@ interface QueryState {
 }
 
 const initialState: QueryState = {
-  selectedQueryId: 'all-customers',
-  currentSql: 'SELECT * FROM customers LIMIT 10;',
-  predefinedQueries: [
-    {
-      id: 'all-customers',
-      name: 'All Customers',
-      sql: 'SELECT * FROM customers LIMIT 10;',
-      description: 'Retrieve all customer records',
-    },
-    {
-      id: 'recent-orders',
-      name: 'Recent Orders',
-      sql: 'SELECT * FROM orders ORDER BY OrderDate DESC LIMIT 20;',
-      description: 'Most recent orders',
-    },
-    {
-      id: 'product-inventory',
-      name: 'Product Inventory',
-      sql: 'SELECT ProductID, ProductName, UnitsInStock, UnitsOnOrder FROM products WHERE Discontinued = 0;',
-      description: 'Current product inventory',
-    },
-    {
-      id: 'employee-list',
-      name: 'Employee List',
-      sql: 'SELECT EmployeeID, FirstName, LastName, Title, City FROM employees;',
-      description: 'All employees',
-    },
-    {
-      id: 'top-products',
-      name: 'Top Products',
-      sql: 'SELECT ProductID, ProductName, UnitPrice FROM products ORDER BY UnitPrice DESC LIMIT 10;',
-      description: 'Highest priced products',
-    },
-  ],
+  selectedQueryId: PREDEFINED_QUERIES[0].id,
+  currentSql: PREDEFINED_QUERIES[0].sql,
+  predefinedQueries: [...PREDEFINED_QUERIES],
   queryHistory: [],
 }
 
@@ -78,9 +48,9 @@ const querySlice = createSlice({
         timestamp: Date.now(),
         rowCount: action.payload.rowCount,
       })
-      // Keep only last 50 queries
-      if (state.queryHistory.length > 50) {
-        state.queryHistory = state.queryHistory.slice(0, 50)
+      // Keep only last N queries
+      if (state.queryHistory.length > QUERY_EXECUTION.MAX_HISTORY_ENTRIES) {
+        state.queryHistory = state.queryHistory.slice(0, QUERY_EXECUTION.MAX_HISTORY_ENTRIES)
       }
     },
     clearHistory: (state) => {

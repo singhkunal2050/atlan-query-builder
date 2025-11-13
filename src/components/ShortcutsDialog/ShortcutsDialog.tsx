@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { HelpCircle } from "lucide-react"
 import { forwardRef, useImperativeHandle, useState } from "react"
+import { KEYBOARD_SHORTCUTS } from "@/lib/constants"
 
 interface Shortcut {
   action: string
@@ -16,10 +17,10 @@ interface Shortcut {
 }
 
 const shortcuts: Shortcut[] = [
-  { action: "Run Query", keys: ["⌘", "Enter"] },
-  { action: "Export Results", keys: ["⌘", "E"] },
-  { action: "Clear Results", keys: ["⌘", "⇧", "C"] },
-  { action: "Show Help", keys: ["⌘", "/"] },
+  { action: "Run Query", keys: KEYBOARD_SHORTCUTS.RUN_QUERY.mac.split('+') },
+  { action: "Export Results", keys: KEYBOARD_SHORTCUTS.EXPORT.mac.split('+') },
+  { action: "Clear Results", keys: KEYBOARD_SHORTCUTS.CLEAR_RESULTS.mac.split('+') },
+  { action: "Show Help", keys: KEYBOARD_SHORTCUTS.SHOW_HELP.mac.split('+') },
 ]
 
 const KeyBadge = ({ keyLabel }: { keyLabel: string }) => (

@@ -2,6 +2,7 @@ import MonacoEditor from "@monaco-editor/react"
 import { useTheme } from "@/hooks/useTheme"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { setCurrentSql } from "@/store/slices/querySlice"
+import { EDITOR_CONFIG } from "@/lib/constants"
 
 export function Editor() {
   const { theme } = useTheme()
@@ -27,16 +28,16 @@ export function Editor() {
           onChange={handleEditorChange}
           options={{
             minimap: { enabled: false },
-            fontSize: 13,
+            fontSize: EDITOR_CONFIG.FONT_SIZE,
             lineNumbers: "on",
             scrollBeyondLastLine: false,
             automaticLayout: true,
             padding: { top: 16, bottom: 16 },
-            lineHeight: 20,
-            fontFamily: "'JetBrains Mono', 'Fira Code', 'Consolas', monospace",
+            lineHeight: EDITOR_CONFIG.LINE_HEIGHT,
+            fontFamily: EDITOR_CONFIG.FONT_FAMILY,
             scrollbar: {
-              verticalScrollbarSize: 8,
-              horizontalScrollbarSize: 8,
+              verticalScrollbarSize: EDITOR_CONFIG.SCROLLBAR_SIZE,
+              horizontalScrollbarSize: EDITOR_CONFIG.SCROLLBAR_SIZE,
             },
           }}
         />
