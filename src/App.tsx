@@ -120,7 +120,7 @@ function App() {
               </DropdownMenuContent>
             </DropdownMenu>
             <QueryHistory />
-            <Button variant="ghost" size="sm" onClick={toggleTheme} className="hidden sm:flex">
+            <Button variant="ghost" size="sm" onClick={toggleTheme}>
               {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </Button>
             <ShortcutsDialog ref={shortcutsRef} />
