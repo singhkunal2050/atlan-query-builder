@@ -4,6 +4,7 @@ import { Play, Download, FileJson, FileSpreadsheet, Moon, Sun } from "lucide-rea
 import { Editor } from "@/components/Editor/Editor"
 import { ResultsTable } from "@/components/Table/ResultsTable"
 import { QuerySelector } from "@/components/QuerySelector/QuerySelector"
+import { QueryHistory } from "@/components/QueryHistory/QueryHistory"
 import { ShortcutsDialog, type ShortcutsDialogRef } from "@/components/ShortcutsDialog/ShortcutsDialog"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts"
@@ -116,6 +117,7 @@ function App() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            <QueryHistory />
             <Button variant="ghost" size="sm" onClick={toggleTheme}>
               {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </Button>
