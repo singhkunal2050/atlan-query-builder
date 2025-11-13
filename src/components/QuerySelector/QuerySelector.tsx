@@ -10,17 +10,21 @@ import {
 import { ChevronDown } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { selectPredefinedQuery } from "@/store/slices/querySlice"
+import { useCallback, useMemo } from "react"
 
 export function QuerySelector() {
   const dispatch = useAppDispatch()
   const predefinedQueries = useAppSelector(state => state.query.predefinedQueries)
   const selectedQueryId = useAppSelector(state => state.query.selectedQueryId)
+  
+  const selectedQuery = useMemo(() => 
+    predefinedQueries.find(q => q.id === selectedQueryId),
+    [predefinedQueries, selectedQueryId]
+  )
 
-  const selectedQuery = predefinedQueries.find(q => q.id === selectedQueryId)
-
-  const handleSelect = (queryId: string) => {
+  const handleSelect = useCallback((queryId: string) => {
     dispatch(selectPredefinedQuery(queryId))
-  }
+  }, [dispatch])
 
   return (
     <DropdownMenu>

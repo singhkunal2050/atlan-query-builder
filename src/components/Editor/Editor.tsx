@@ -2,6 +2,7 @@ import MonacoEditor, { type OnMount } from "@monaco-editor/react"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { setCurrentSql } from "@/store/slices/querySlice"
 import { EDITOR_CONFIG } from "@/lib/constants"
+import { useCallback } from "react"
 
 interface EditorProps {
   onRunQuery?: () => void
@@ -16,11 +17,11 @@ export function Editor({ onRunQuery, onExportCSV, onExportJSON, onClearResults, 
   const dispatch = useAppDispatch()
   const currentSql = useAppSelector(state => state.query.currentSql)
 
-  const handleEditorChange = (value: string | undefined) => {
+  const handleEditorChange = useCallback((value: string | undefined) => {
     dispatch(setCurrentSql(value || ''))
-  }
+  }, [dispatch])
 
-  const handleEditorMount: OnMount = (editor, monaco) => {
+  const handleEditorMount: OnMount = useCallback((editor, monaco) => {
     // Add keyboard shortcuts to editor
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
       onRunQuery?.()
@@ -41,7 +42,7 @@ export function Editor({ onRunQuery, onExportCSV, onExportJSON, onClearResults, 
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Slash, () => {
       onShowHelp?.()
     })
-  }
+  }, [onRunQuery, onExportCSV, onExportJSON, onClearResults, onShowHelp])
 
   return (
     <div className="h-full flex flex-col bg-background">

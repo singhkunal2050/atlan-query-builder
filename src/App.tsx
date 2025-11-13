@@ -11,7 +11,7 @@ import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts"
 import { useTheme } from "@/hooks/useTheme"
 import { executeQuery } from "@/lib/queryEngine"
 import { clearResults } from "@/store/slices/resultsSlice"
-import { useRef } from "react"
+import { useRef, useCallback } from "react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,11 +27,11 @@ function App() {
   const shortcutsRef = useRef<ShortcutsDialogRef>(null)
   const { theme, toggleTheme } = useTheme()
 
-  const handleRunQuery = async () => {
+  const handleRunQuery = useCallback(async () => {
     await executeQuery(currentSql, dispatch)
-  }
+  }, [currentSql, dispatch])
 
-  const handleExportCSV = () => {
+  const handleExportCSV = useCallback(() => {
     if (!results) return
 
     const csv = [
@@ -48,9 +48,9 @@ function App() {
     a.download = `query-results-${Date.now()}.csv`
     a.click()
     URL.revokeObjectURL(url)
-  }
+  }, [results])
 
-  const handleExportJSON = () => {
+  const handleExportJSON = useCallback(() => {
     if (!results) return
 
     const json = JSON.stringify(results.rows, null, 2)
@@ -61,11 +61,11 @@ function App() {
     a.download = `query-results-${Date.now()}.json`
     a.click()
     URL.revokeObjectURL(url)
-  }
+  }, [results])
 
-  const handleClearResults = () => {
+  const handleClearResults = useCallback(() => {
     dispatch(clearResults())
-  }
+  }, [dispatch])
 
   useKeyboardShortcuts({
     onRunQuery: handleRunQuery,

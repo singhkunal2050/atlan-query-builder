@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ArrowUpDown, ArrowUp, ArrowDown, Search, Loader2 } from "lucide-react"
-import { useMemo } from "react"
+import { useMemo, useCallback } from "react"
 import {
   Select,
   SelectContent,
@@ -52,25 +52,28 @@ export function ResultsTable() {
   }, [data, searchTerm, sortColumn, sortDirection])
 
   const totalRows = filteredAndSortedData.length
-  const totalPages = Math.ceil(totalRows / pageSize)
+  const totalPages = useMemo(() => Math.ceil(totalRows / pageSize), [totalRows, pageSize])
   const startIndex = (currentPage - 1) * pageSize
-  const paginatedData = filteredAndSortedData.slice(startIndex, startIndex + pageSize)
+  const paginatedData = useMemo(() => 
+    filteredAndSortedData.slice(startIndex, startIndex + pageSize),
+    [filteredAndSortedData, startIndex, pageSize]
+  )
 
-  const handleSort = (column: string) => {
+  const handleSort = useCallback((column: string) => {
     dispatch(setSortColumn(column))
-  }
+  }, [dispatch])
 
-  const handleSearch = (value: string) => {
+  const handleSearch = useCallback((value: string) => {
     dispatch(setSearchTerm(value))
-  }
+  }, [dispatch])
 
-  const handlePageChange = (page: number) => {
+  const handlePageChange = useCallback((page: number) => {
     dispatch(setCurrentPage(page))
-  }
+  }, [dispatch])
 
-  const handlePageSizeChange = (size: string) => {
+  const handlePageSizeChange = useCallback((size: string) => {
     dispatch(setPageSize(Number(size)))
-  }
+  }, [dispatch])
 
   if (loading) {
     return (

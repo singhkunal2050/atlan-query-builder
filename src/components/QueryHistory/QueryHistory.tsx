@@ -10,18 +10,19 @@ import {
 import { History, Trash2 } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { setCurrentSql, clearHistory } from "@/store/slices/querySlice"
+import { useCallback } from "react"
 
 export function QueryHistory() {
   const dispatch = useAppDispatch()
   const queryHistory = useAppSelector(state => state.query.queryHistory)
 
-  const handleSelectQuery = (sql: string) => {
+  const handleSelectQuery = useCallback((sql: string) => {
     dispatch(setCurrentSql(sql))
-  }
+  }, [dispatch])
 
-  const handleClearHistory = () => {
+  const handleClearHistory = useCallback(() => {
     dispatch(clearHistory())
-  }
+  }, [dispatch])
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp)
