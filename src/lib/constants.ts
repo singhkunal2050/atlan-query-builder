@@ -11,7 +11,7 @@ export const PREDEFINED_QUERIES = [
   {
     id: 'all-customers',
     name: 'All Customers',
-    sql: 'SELECT * FROM customers LIMIT 10;',
+    sql: 'SELECT * FROM customers LIMIT 100;',
     description: 'Retrieve all customer records',
   },
   {

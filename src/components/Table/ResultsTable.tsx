@@ -146,45 +146,47 @@ export function ResultsTable() {
       </div>
 
       {/* Table */}
-      <div className="flex-1 overflow-auto">
-        <Table>
-          <TableHeader className="sticky top-0 bg-background z-10">
-            <TableRow>
-              {data.columns.map((column) => (
-                <TableHead key={column} className="h-9">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 px-2 text-xs font-medium -ml-2"
-                    onClick={() => handleSort(column)}
-                  >
-                    {column}
-                    {sortColumn === column ? (
-                      sortDirection === 'asc' ? (
-                        <ArrowUp className="ml-1 h-3 w-3" />
-                      ) : (
-                        <ArrowDown className="ml-1 h-3 w-3" />
-                      )
-                    ) : (
-                      <ArrowUpDown className="ml-1 h-3 w-3 opacity-50" />
-                    )}
-                  </Button>
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedData.map((row, idx) => (
-              <TableRow key={idx}>
+      <div className="flex-1 overflow-auto relative custom-scrollbar">
+        <div className="min-w-full inline-block align-middle">
+          <Table>
+            <TableHeader className="sticky top-0 bg-background z-10">
+              <TableRow>
                 {data.columns.map((column) => (
-                  <TableCell key={column} className="text-xs py-2">
-                    {row[column] != null ? String(row[column]) : <span className="text-muted-foreground">NULL</span>}
-                  </TableCell>
+                  <TableHead key={column} className="h-9 whitespace-nowrap">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 px-2 text-xs font-medium -ml-2"
+                      onClick={() => handleSort(column)}
+                    >
+                      {column}
+                      {sortColumn === column ? (
+                        sortDirection === 'asc' ? (
+                          <ArrowUp className="ml-1 h-3 w-3" />
+                        ) : (
+                          <ArrowDown className="ml-1 h-3 w-3" />
+                        )
+                      ) : (
+                        <ArrowUpDown className="ml-1 h-3 w-3 opacity-50" />
+                      )}
+                    </Button>
+                  </TableHead>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {paginatedData.map((row, idx) => (
+                <TableRow key={idx}>
+                  {data.columns.map((column) => (
+                    <TableCell key={column} className="text-xs py-2 whitespace-nowrap">
+                      {row[column] != null ? String(row[column]) : <span className="text-muted-foreground">NULL</span>}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       {/* Pagination */}
