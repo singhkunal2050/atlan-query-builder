@@ -1,16 +1,42 @@
-import MonacoEditor from "@monaco-editor/react"
+import MonacoEditor, { type OnMount } from "@monaco-editor/react"
 import { useTheme } from "@/hooks/useTheme"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { setCurrentSql } from "@/store/slices/querySlice"
 import { EDITOR_CONFIG } from "@/lib/constants"
 
-export function Editor() {
+interface EditorProps {
+  onRunQuery?: () => void
+  onExport?: () => void
+  onClearResults?: () => void
+  onShowHelp?: () => void
+}
+
+export function Editor({ onRunQuery, onExport, onClearResults, onShowHelp }: EditorProps) {
   const { theme } = useTheme()
   const dispatch = useAppDispatch()
   const currentSql = useAppSelector(state => state.query.currentSql)
 
   const handleEditorChange = (value: string | undefined) => {
     dispatch(setCurrentSql(value || ''))
+  }
+
+  const handleEditorMount: OnMount = (editor, monaco) => {
+    // Add keyboard shortcuts to editor
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+      onRunQuery?.()
+    })
+
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyE, () => {
+      onExport?.()
+    })
+
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyC, () => {
+      onClearResults?.()
+    })
+
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Slash, () => {
+      onShowHelp?.()
+    })
   }
 
   return (
@@ -26,6 +52,7 @@ export function Editor() {
           theme={theme === "dark" ? "vs-dark" : "vs-light"}
           value={currentSql}
           onChange={handleEditorChange}
+          onMount={handleEditorMount}
           options={{
             minimap: { enabled: false },
             fontSize: EDITOR_CONFIG.FONT_SIZE,

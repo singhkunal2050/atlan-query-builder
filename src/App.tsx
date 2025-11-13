@@ -56,7 +56,7 @@ function App() {
     <div className="h-screen flex flex-col">
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center px-4 gap-4">
+        <div className="flex h-14 items-center px-4 gap-4">
           <h1 className="text-sm font-semibold">SQL Query Builder</h1>
           <div className="flex-1 flex items-center gap-3">
             <QuerySelector />
@@ -89,7 +89,12 @@ function App() {
       {/* Main Content */}
       <ResizablePanelGroup direction="vertical" className="flex-1">
         <ResizablePanel defaultSize={30} minSize={30}>
-          <Editor />
+          <Editor 
+            onRunQuery={handleRunQuery}
+            onExport={handleExport}
+            onClearResults={handleClearResults}
+            onShowHelp={() => shortcutsRef.current?.toggle()}
+          />
         </ResizablePanel>
 
         <ResizableHandle withHandle className="bg-border hover:bg-accent transition-colors" />
