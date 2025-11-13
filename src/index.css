@@ -14,13 +14,13 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.2);
+  background: oklch(from var(--muted-foreground) l c h / 0.2);
   border-radius: 4px;
   transition: background 0.2s;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.3);
+  background: oklch(from var(--muted-foreground) l c h / 0.3);
 }
 
 .custom-scrollbar::-webkit-scrollbar-corner {
@@ -30,7 +30,7 @@
 /* Firefox scrollbar */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--muted-foreground) / 0.2) transparent;
+  scrollbar-color: oklch(from var(--muted-foreground) l c h / 0.2) transparent;
 }
 
 @theme inline {
