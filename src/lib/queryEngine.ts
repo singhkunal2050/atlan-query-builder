@@ -5,14 +5,22 @@ import type { AppDispatch } from '@/store/store'
 import type { QueryResult } from '@/store/slices/resultsSlice'
 import { CSV_FILES, QUERY_EXECUTION } from '@/lib/constants'
 
+// CSV cache
+const csvCache = new Map<string, any[]>()
+
 // Simple SQL parser to extract table name
 function parseTableName(sql: string): string | null {
   const fromMatch = sql.match(/FROM\s+(\w+)/i)
   return fromMatch ? fromMatch[1].toLowerCase() : null
 }
 
-// Load CSV data
+// Load CSV data with caching
 async function loadCSV(tableName: string): Promise<any[]> {
+  // Check cache first
+  if (csvCache.has(tableName)) {
+    return csvCache.get(tableName)!
+  }
+
   const csvPath = CSV_FILES[tableName]
   if (!csvPath) {
     throw new Error(`Table '${tableName}' not found`)
@@ -21,7 +29,7 @@ async function loadCSV(tableName: string): Promise<any[]> {
   const response = await fetch(csvPath)
   const csvText = await response.text()
 
-  return new Promise((resolve, reject) => {
+  const data = await new Promise<any[]>((resolve, reject) => {
     Papa.parse(csvText, {
       header: true,
       skipEmptyLines: true,
@@ -29,6 +37,10 @@ async function loadCSV(tableName: string): Promise<any[]> {
       error: (error: Error) => reject(error),
     })
   })
+
+  // Cache the parsed data
+  csvCache.set(tableName, data)
+  return data
 }
 
 // Simple query executor (mock SQL execution)
