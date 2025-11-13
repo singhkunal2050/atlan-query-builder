@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { setSortColumn, setSearchTerm, setCurrentPage, setPageSize, setViewMode } from "@/store/slices/resultsSlice"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ArrowUpDown, ArrowUp, ArrowDown, Search, Loader2, List, Layers } from "lucide-react"
 import { useMemo, useCallback } from "react"
 import {
