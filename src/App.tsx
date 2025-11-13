@@ -1,6 +1,6 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Button } from "@/components/ui/button"
-import { Play, Download } from "lucide-react"
+import { Play, Download, FileJson, FileSpreadsheet } from "lucide-react"
 import { Editor } from "@/components/Editor/Editor"
 import { ResultsTable } from "@/components/Table/ResultsTable"
 import { QuerySelector } from "@/components/QuerySelector/QuerySelector"
@@ -10,6 +10,12 @@ import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts"
 import { executeQuery } from "@/lib/queryEngine"
 import { clearResults } from "@/store/slices/resultsSlice"
 import { useRef } from "react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 function App() {
   const dispatch = useAppDispatch()
@@ -22,7 +28,7 @@ function App() {
     await executeQuery(currentSql, dispatch)
   }
 
-  const handleExport = () => {
+  const handleExportCSV = () => {
     if (!results) return
 
     const csv = [
@@ -41,13 +47,27 @@ function App() {
     URL.revokeObjectURL(url)
   }
 
+  const handleExportJSON = () => {
+    if (!results) return
+
+    const json = JSON.stringify(results.rows, null, 2)
+    const blob = new Blob([json], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `query-results-${Date.now()}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   const handleClearResults = () => {
     dispatch(clearResults())
   }
 
   useKeyboardShortcuts({
     onRunQuery: handleRunQuery,
-    onExport: handleExport,
+    onExportCSV: handleExportCSV,
+    onExportJSON: handleExportJSON,
     onClearResults: handleClearResults,
     onShowHelp: () => shortcutsRef.current?.toggle(),
   })
@@ -71,16 +91,29 @@ function App() {
               <Play className="h-3.5 w-3.5" />
               {loading ? 'Running...' : 'Run Query'}
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="gap-2"
-              onClick={handleExport}
-              disabled={!results}
-            >
-              <Download className="h-3.5 w-3.5" />
-              Export
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2"
+                  disabled={!results}
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  Export
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleExportCSV} className="cursor-pointer">
+                  <FileSpreadsheet className="h-4 w-4 mr-2" />
+                  Export as CSV
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportJSON} className="cursor-pointer">
+                  <FileJson className="h-4 w-4 mr-2" />
+                  Export as JSON
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <ShortcutsDialog ref={shortcutsRef} />
           </div>
         </div>
@@ -91,7 +124,8 @@ function App() {
         <ResizablePanel defaultSize={30} minSize={30}>
           <Editor 
             onRunQuery={handleRunQuery}
-            onExport={handleExport}
+            onExportCSV={handleExportCSV}
+            onExportJSON={handleExportJSON}
             onClearResults={handleClearResults}
             onShowHelp={() => shortcutsRef.current?.toggle()}
           />

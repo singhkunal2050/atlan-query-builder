@@ -1,7 +1,8 @@
 // Keyboard Shortcuts
 export const KEYBOARD_SHORTCUTS = {
   RUN_QUERY: { mac: '⌘+Enter', win: 'Ctrl+Enter' },
-  EXPORT: { mac: '⌘+E', win: 'Ctrl+E' },
+  EXPORT_CSV: { mac: '⌘+E', win: 'Ctrl+E' },
+  EXPORT_JSON: { mac: '⌘+J', win: 'Ctrl+J' },
   CLEAR_RESULTS: { mac: '⌘+⇧+C', win: 'Ctrl+Shift+C' },
   SHOW_HELP: { mac: '⌘+/', win: 'Ctrl+/' },
 } as const

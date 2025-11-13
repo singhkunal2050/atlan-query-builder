@@ -18,7 +18,8 @@ interface Shortcut {
 
 const shortcuts: Shortcut[] = [
   { action: "Run Query", keys: KEYBOARD_SHORTCUTS.RUN_QUERY.mac.split('+') },
-  { action: "Export Results", keys: KEYBOARD_SHORTCUTS.EXPORT.mac.split('+') },
+  { action: "Export as CSV", keys: KEYBOARD_SHORTCUTS.EXPORT_CSV.mac.split('+') },
+  { action: "Export as JSON", keys: KEYBOARD_SHORTCUTS.EXPORT_JSON.mac.split('+') },
   { action: "Clear Results", keys: KEYBOARD_SHORTCUTS.CLEAR_RESULTS.mac.split('+') },
   { action: "Show Help", keys: KEYBOARD_SHORTCUTS.SHOW_HELP.mac.split('+') },
 ]

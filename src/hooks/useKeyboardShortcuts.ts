@@ -2,7 +2,8 @@ import { useEffect } from 'react'
 
 interface ShortcutHandlers {
   onRunQuery?: () => void
-  onExport?: () => void
+  onExportCSV?: () => void
+  onExportJSON?: () => void
   onClearResults?: () => void
   onShowHelp?: () => void
 }
@@ -20,10 +21,17 @@ export function useKeyboardShortcuts(handlers: ShortcutHandlers) {
         return
       }
 
-      // Cmd/Ctrl + E - Export
+      // Cmd/Ctrl + E - Export CSV
       if (modKey && e.key === 'e') {
         e.preventDefault()
-        handlers.onExport?.()
+        handlers.onExportCSV?.()
+        return
+      }
+
+      // Cmd/Ctrl + J - Export JSON
+      if (modKey && e.key === 'j') {
+        e.preventDefault()
+        handlers.onExportJSON?.()
         return
       }
 

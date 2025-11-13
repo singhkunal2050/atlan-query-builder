@@ -6,12 +6,13 @@ import { EDITOR_CONFIG } from "@/lib/constants"
 
 interface EditorProps {
   onRunQuery?: () => void
-  onExport?: () => void
+  onExportCSV?: () => void
+  onExportJSON?: () => void
   onClearResults?: () => void
   onShowHelp?: () => void
 }
 
-export function Editor({ onRunQuery, onExport, onClearResults, onShowHelp }: EditorProps) {
+export function Editor({ onRunQuery, onExportCSV, onExportJSON, onClearResults, onShowHelp }: EditorProps) {
   const { theme } = useTheme()
   const dispatch = useAppDispatch()
   const currentSql = useAppSelector(state => state.query.currentSql)
@@ -27,7 +28,11 @@ export function Editor({ onRunQuery, onExport, onClearResults, onShowHelp }: Edi
     })
 
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyE, () => {
-      onExport?.()
+      onExportCSV?.()
+    })
+
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyJ, () => {
+      onExportJSON?.()
     })
 
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyC, () => {
