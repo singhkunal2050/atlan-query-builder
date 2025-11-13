@@ -1,7 +1,6 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Button } from "@/components/ui/button"
 import { Play, Download, FileJson, FileSpreadsheet, Moon, Sun } from "lucide-react"
-import { Editor } from "@/components/Editor/Editor"
 import { ResultsTable } from "@/components/Table/ResultsTable"
 import { QuerySelector } from "@/components/QuerySelector/QuerySelector"
 import { QueryHistory } from "@/components/QueryHistory/QueryHistory"
@@ -11,13 +10,15 @@ import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts"
 import { useTheme } from "@/hooks/useTheme"
 import { executeQuery } from "@/lib/queryEngine"
 import { clearResults } from "@/store/slices/resultsSlice"
-import { useRef, useCallback } from "react"
+import { useRef, useCallback, lazy, Suspense } from "react"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
+const Editor = lazy(() => import("@/components/Editor/Editor").then(m => ({ default: m.Editor })))
 
 function App() {
   const dispatch = useAppDispatch()
@@ -131,14 +132,16 @@ function App() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col md:hidden">
         <div className="h-[45vh] border-b">
-          <Editor 
-            onRunQuery={handleRunQuery}
-            onExportCSV={handleExportCSV}
-            onExportJSON={handleExportJSON}
-            onClearResults={handleClearResults}
-            onShowHelp={() => shortcutsRef.current?.toggle()}
-            theme={theme}
-          />
+          <Suspense fallback={<div className="h-full bg-background" />}>
+            <Editor 
+              onRunQuery={handleRunQuery}
+              onExportCSV={handleExportCSV}
+              onExportJSON={handleExportJSON}
+              onClearResults={handleClearResults}
+              onShowHelp={() => shortcutsRef.current?.toggle()}
+              theme={theme}
+            />
+          </Suspense>
         </div>
         <div className="flex-1">
           <ResultsTable />
@@ -148,14 +151,16 @@ function App() {
       <div className="hidden md:flex flex-1">
         <ResizablePanelGroup direction="vertical" className="flex-1">
           <ResizablePanel defaultSize={30} minSize={30}>
-            <Editor 
-              onRunQuery={handleRunQuery}
-              onExportCSV={handleExportCSV}
-              onExportJSON={handleExportJSON}
-              onClearResults={handleClearResults}
-              onShowHelp={() => shortcutsRef.current?.toggle()}
-              theme={theme}
-            />
+            <Suspense fallback={<div className="h-full bg-background" />}>
+              <Editor 
+                onRunQuery={handleRunQuery}
+                onExportCSV={handleExportCSV}
+                onExportJSON={handleExportJSON}
+                onClearResults={handleClearResults}
+                onShowHelp={() => shortcutsRef.current?.toggle()}
+                theme={theme}
+              />
+            </Suspense>
           </ResizablePanel>
 
           <ResizableHandle withHandle className="bg-border hover:bg-accent transition-colors" />
