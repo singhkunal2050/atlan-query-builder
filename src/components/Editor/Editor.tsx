@@ -16,7 +16,7 @@ export function Editor() {
     <div className="h-full flex flex-col bg-background">
       <div className="border-b px-4 py-2 flex items-center justify-between bg-muted/30">
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">SQL Editor</span>
-        <span className="text-xs text-muted-foreground">Press Cmd+Enter to run</span>
+        <span className="text-xs text-muted-foreground">⌘+Enter to run</span>
       </div>
       <div className="flex-1">
         <MonacoEditor

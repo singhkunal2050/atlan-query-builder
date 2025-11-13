@@ -4,14 +4,19 @@ import { Play, Download } from "lucide-react"
 import { Editor } from "@/components/Editor/Editor"
 import { ResultsTable } from "@/components/Table/ResultsTable"
 import { QuerySelector } from "@/components/QuerySelector/QuerySelector"
+import { ShortcutsDialog, type ShortcutsDialogRef } from "@/components/ShortcutsDialog/ShortcutsDialog"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts"
 import { executeQuery } from "@/lib/queryEngine"
+import { clearResults } from "@/store/slices/resultsSlice"
+import { useRef } from "react"
 
 function App() {
   const dispatch = useAppDispatch()
   const currentSql = useAppSelector(state => state.query.currentSql)
   const results = useAppSelector(state => state.results.data)
   const loading = useAppSelector(state => state.results.loading)
+  const shortcutsRef = useRef<ShortcutsDialogRef>(null)
 
   const handleRunQuery = async () => {
     await executeQuery(currentSql, dispatch)
@@ -36,6 +41,17 @@ function App() {
     URL.revokeObjectURL(url)
   }
 
+  const handleClearResults = () => {
+    dispatch(clearResults())
+  }
+
+  useKeyboardShortcuts({
+    onRunQuery: handleRunQuery,
+    onExport: handleExport,
+    onClearResults: handleClearResults,
+    onShowHelp: () => shortcutsRef.current?.toggle(),
+  })
+
   return (
     <div className="h-screen flex flex-col">
       {/* Header */}
@@ -46,18 +62,18 @@ function App() {
             <QuerySelector />
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              onClick={handleRunQuery}
-              size="sm"
+            <Button 
+              onClick={handleRunQuery} 
+              size="sm" 
               className="gap-2"
               disabled={loading || !currentSql.trim()}
             >
               <Play className="h-3.5 w-3.5" />
               {loading ? 'Running...' : 'Run Query'}
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
+            <Button 
+              variant="outline" 
+              size="sm" 
               className="gap-2"
               onClick={handleExport}
               disabled={!results}
@@ -65,6 +81,7 @@ function App() {
               <Download className="h-3.5 w-3.5" />
               Export
             </Button>
+            <ShortcutsDialog ref={shortcutsRef} />
           </div>
         </div>
       </header>
