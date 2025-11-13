@@ -79,31 +79,33 @@ function App() {
     <div className="h-screen flex flex-col">
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex h-14 items-center px-4 gap-4">
-          <h1 className="text-sm font-semibold">SQL Query Builder</h1>
-          <div className="flex-1 flex items-center gap-3">
-            <QuerySelector />
-          </div>
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:h-14 items-stretch sm:items-center px-3 sm:px-4 gap-2 sm:gap-4 py-2 sm:py-0">
+          <h1 className="text-sm font-semibold hidden sm:block">SQL Query Builder</h1>
+          <div className="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+            <div className="flex-1 min-w-0">
+              <QuerySelector />
+            </div>
             <Button 
               onClick={handleRunQuery} 
               size="sm" 
-              className="gap-2"
+              className="gap-2 w-full sm:w-auto"
               disabled={loading || !currentSql.trim()}
             >
               <Play className="h-3.5 w-3.5" />
               {loading ? 'Running...' : 'Run Query'}
             </Button>
+          </div>
+          <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="gap-2"
+                  className="gap-2 flex-1 sm:flex-none"
                   disabled={!results}
                 >
                   <Download className="h-3.5 w-3.5" />
-                  Export
+                  <span className="hidden sm:inline">Export</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -118,7 +120,7 @@ function App() {
               </DropdownMenuContent>
             </DropdownMenu>
             <QueryHistory />
-            <Button variant="ghost" size="sm" onClick={toggleTheme}>
+            <Button variant="ghost" size="sm" onClick={toggleTheme} className="hidden sm:flex">
               {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
             </Button>
             <ShortcutsDialog ref={shortcutsRef} />
@@ -127,8 +129,8 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <ResizablePanelGroup direction="vertical" className="flex-1">
-        <ResizablePanel defaultSize={30} minSize={30}>
+      <div className="flex-1 flex flex-col md:hidden">
+        <div className="h-[45vh] border-b">
           <Editor 
             onRunQuery={handleRunQuery}
             onExportCSV={handleExportCSV}
@@ -137,14 +139,32 @@ function App() {
             onShowHelp={() => shortcutsRef.current?.toggle()}
             theme={theme}
           />
-        </ResizablePanel>
-
-        <ResizableHandle withHandle className="bg-border hover:bg-accent transition-colors" />
-
-        <ResizablePanel defaultSize={70} minSize={20}>
+        </div>
+        <div className="flex-1">
           <ResultsTable />
-        </ResizablePanel>
-      </ResizablePanelGroup>
+        </div>
+      </div>
+
+      <div className="hidden md:flex flex-1">
+        <ResizablePanelGroup direction="vertical" className="flex-1">
+          <ResizablePanel defaultSize={30} minSize={30}>
+            <Editor 
+              onRunQuery={handleRunQuery}
+              onExportCSV={handleExportCSV}
+              onExportJSON={handleExportJSON}
+              onClearResults={handleClearResults}
+              onShowHelp={() => shortcutsRef.current?.toggle()}
+              theme={theme}
+            />
+          </ResizablePanel>
+
+          <ResizableHandle withHandle className="bg-border hover:bg-accent transition-colors" />
+
+          <ResizablePanel defaultSize={70} minSize={20}>
+            <ResultsTable />
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
     </div>
   )
 }

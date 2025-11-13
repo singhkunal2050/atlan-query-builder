@@ -29,12 +29,12 @@ export function QuerySelector() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2 min-w-[200px] justify-between">
-          <span className="text-sm">{selectedQuery?.name || 'Select Query'}</span>
-          <ChevronDown className="h-4 w-4 opacity-50" />
+        <Button variant="outline" size="sm" className="gap-2 w-full sm:min-w-[200px] justify-between">
+          <span className="text-sm truncate">{selectedQuery?.name || 'Select Query'}</span>
+          <ChevronDown className="h-4 w-4 opacity-50 shrink-0" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-[250px]">
+      <DropdownMenuContent align="start" className="w-[calc(100vw-1.5rem)] sm:w-[250px]">
         <DropdownMenuLabel>Predefined Queries</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {predefinedQueries.map((query) => (

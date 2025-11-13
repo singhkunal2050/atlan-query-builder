@@ -125,28 +125,28 @@ export function ResultsTable() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-background">
-      {/* Header */}
-      <div className="border-b px-4 py-2 flex items-center justify-between bg-muted/30">
-        <div className="flex items-center gap-4">
-          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Query Results</span>
-          <span className="text-xs text-muted-foreground">
-            {totalRows} {totalRows === 1 ? 'row' : 'rows'}
-            {data.executionTime && ` • ${data.executionTime}ms`}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-            <Input
-              placeholder="Search..."
-              value={searchTerm}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="h-7 pl-7 pr-2 text-xs w-[150px]"
-            />
+      <div className="h-full flex flex-col bg-background">
+        {/* Header */}
+        <div className="border-b px-3 sm:px-4 py-2 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:justify-between bg-muted/30">
+          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Query Results</span>
+            <span className="text-xs text-muted-foreground">
+              {totalRows} {totalRows === 1 ? 'row' : 'rows'}
+              {data.executionTime && <span className="hidden sm:inline"> • {data.executionTime}ms</span>}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="relative flex-1 sm:flex-none">
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="h-7 pl-7 pr-2 text-xs w-full sm:w-[150px]"
+              />
+            </div>
           </div>
         </div>
-      </div>
 
       {/* Table */}
       <div className="flex-1 overflow-auto relative custom-scrollbar">
@@ -194,9 +194,9 @@ export function ResultsTable() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="border-t px-4 py-2 flex items-center justify-between bg-muted/30">
+        <div className="border-t px-3 sm:px-4 py-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:justify-between bg-muted/30">
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">Rows per page:</span>
+            <span className="text-xs text-muted-foreground whitespace-nowrap">Rows per page:</span>
             <Select value={String(pageSize)} onValueChange={handlePageSizeChange}>
               <SelectTrigger className="h-7 w-[70px] text-xs">
                 <SelectValue />
@@ -208,24 +208,25 @@ export function ResultsTable() {
               </SelectContent>
             </Select>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">
+          <div className="flex items-center justify-between sm:justify-end gap-2">
+            <span className="text-xs text-muted-foreground whitespace-nowrap">
               Page {currentPage} of {totalPages}
             </span>
             <div className="flex gap-1">
               <Button
                 variant="outline"
                 size="sm"
-                className="h-7 px-2 text-xs"
+                className="h-7 px-2 sm:px-3 text-xs"
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
               >
-                Previous
+                <span className="hidden sm:inline">Previous</span>
+                <span className="sm:hidden">Prev</span>
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                className="h-7 px-2 text-xs"
+                className="h-7 px-2 sm:px-3 text-xs"
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
               >

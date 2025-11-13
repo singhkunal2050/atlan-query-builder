@@ -44,7 +44,7 @@ export function QueryHistory() {
           <span className="text-xs">History ({queryHistory.length})</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[500px] max-h-[400px] overflow-y-auto custom-scrollbar">
+      <DropdownMenuContent align="end" className="w-[calc(100vw-1.5rem)] sm:w-[500px] max-h-[60vh] sm:max-h-[400px] overflow-y-auto custom-scrollbar">
         <div className="flex items-center justify-between px-2 py-1.5">
           <DropdownMenuLabel className="p-0">Query History</DropdownMenuLabel>
           {queryHistory.length > 0 && (
