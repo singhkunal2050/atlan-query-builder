@@ -11,7 +11,7 @@ A high-performance, web-based SQL query interface built for data analysts. Run q
 > The video demonstrates:
 > - How to select and run predefined queries
 > - Using the Monaco code editor with SQL syntax highlighting
-> - Viewing results with virtual scrolling (handles 10,000+ rows smoothly)
+> - Viewing results with sorting, filtering, and pagination
 > - Exporting results as CSV/JSON
 > - Keyboard shortcuts (⌘+Enter to run queries)
 > - Query history navigation
@@ -48,13 +48,13 @@ npm run build
 |---------|---------|---------|
 | **@monaco-editor/react** | 4.7.0 | Full-featured SQL editor with syntax highlighting |
 | **@tanstack/react-table** | 8.21.3 | Headless table with sorting, filtering, pagination |
-| **@tanstack/react-virtual** | 3.13.12 | Virtual scrolling for rendering 10,000+ rows |
 | **@reduxjs/toolkit** | 2.10.1 | State management for queries & results |
 | **papaparse** | 5.5.3 | Fast CSV parsing for Northwind data |
 | **Tailwind CSS** | 4.1.17 | Utility-first styling |
 | **shadcn/ui** | Latest | Accessible, customizable UI components (Radix UI) |
 | **react-resizable-panels** | 3.0.6 | Resizable editor/results layout |
 | **lucide-react** | 0.553.0 | Modern icon library |
+| **web-vitals** | Latest | Performance metrics logging |
 
 ---
 
@@ -62,84 +62,86 @@ npm run build
 
 ### **Page Load Time**
 
-| Metric | Value | Target | Status |
-|--------|-------|--------|--------|
-| **First Contentful Paint (FCP)** | 0.8s | < 1.8s | ✅ |
-| **Largest Contentful Paint (LCP)** | 1.2s | < 2.5s | ✅ |
-| **Time to Interactive (TTI)** | 1.5s | < 3.5s | ✅ |
-| **Total Blocking Time (TBT)** | 120ms | < 300ms | ✅ |
-| **Cumulative Layout Shift (CLS)** | 0.02 | < 0.1 | ✅ |
+Performance metrics are logged to browser console using `web-vitals` library:
+
+| Metric | Target | Measurement |
+|--------|--------|-------------|
+| **First Contentful Paint (FCP)** | < 1.8s | Open DevTools Console to view |
+| **Largest Contentful Paint (LCP)** | < 2.5s | Real-time logged on page load |
+| **First Input Delay (FID)** | < 100ms | Logged on first interaction |
+| **Cumulative Layout Shift (CLS)** | < 0.1 | Tracked throughout session |
+| **Time to First Byte (TTFB)** | < 600ms | Logged on page load |
 
 **Measurement Methodology:**
-1. **Lighthouse CI** - Automated performance audits on every deployment
-2. **Chrome DevTools Performance Tab** - Simulated "Fast 3G" network throttling
-3. **WebPageTest** - Real-world testing from multiple locations
-4. **Vercel Analytics** - Real user monitoring (RUM) data
+1. **web-vitals library** - Real user monitoring (RUM) metrics logged to console
+2. **Chrome DevTools Performance Tab** - Detailed performance profiling
+3. Run `npm run build && npm run preview` to test production build
 
 ### **Bundle Size**
-- **Initial Bundle**: ~180 KB (gzipped)
-- **Monaco Editor (lazy)**: ~1.2 MB (loaded on demand)
-- **Total App Size**: ~1.4 MB (with code splitting)
+
+Run `npm run build` to see actual bundle sizes. Expected optimizations:
+- **Monaco Editor**: Lazy loaded (separate chunk)
+- **Vendor chunk**: React core libraries
+- **UI chunk**: Radix UI components
+- **Table chunk**: TanStack Table
 
 ---
 
 ## 🚄 Performance Optimizations
 
 ### **1. Code Splitting & Lazy Loading**
+
 ```typescript
-// Monaco Editor loaded only when needed
-const Editor = lazy(() => import('@monaco-editor/react'))
+// App.tsx - Monaco Editor loaded only when needed
+const Editor = lazy(() => import("@/components/Editor/Editor").then(m => ({ default: m.Editor })))
 ```
-- **Impact**: Reduced initial bundle by ~1.2 MB
-- **Result**: FCP improved by 60%
+- Monaco editor (largest dependency) loads asynchronously
+- Initial bundle excludes ~1.2 MB of editor code
+- Fallback shows loading message during editor load
 
-### **2. Virtual Scrolling**
+### **2. React Memoization**
+- `useMemo` for filtered/sorted table data calculations
+- `useCallback` for event handlers to prevent child re-renders
+- Prevents expensive re-computations on unrelated state changes
+
+### **3. CSV In-Memory Caching**
+
 ```typescript
-// TanStack Virtual renders only visible rows
-const virtualizer = useVirtualizer({
-  count: rows.length,
-  getScrollElement: () => scrollRef.current,
-  estimateSize: () => 40,
-  overscan: 10,
-})
+// queryEngine.ts - CSVs fetched once and cached
+const csvCache = new Map<string, any[]>()
+
+async function loadCSV(tableName: string) {
+  if (csvCache.has(tableName)) {
+    return csvCache.get(tableName)! // Return cached data
+  }
+  // ... fetch and parse CSV, then cache
+  csvCache.set(tableName, data)
+}
 ```
-- **Handles 10,000+ rows** without DOM overload
-- **Memory footprint**: ~30 MB for 10K rows (vs ~500 MB without virtualization)
-- **Scroll FPS**: Consistent 60 FPS
+- Network request + parsing happens once per table
+- Subsequent queries use cached data (instant execution)
 
-### **3. React Memoization**
-- `useMemo` for expensive table calculations
-- `useCallback` for event handlers
-- `React.memo` on table cell components
-- **Impact**: Reduced re-renders by 70%
+### **4. Build Optimizations**
 
-### **4. CSV Pre-caching**
 ```typescript
-// CSVs fetched once and cached in Redux
-const cachedData = useAppSelector(state => state.data.tables)
-```
-- **Network requests**: 1x per table (not per query)
-- **Parse time**: ~50ms for 1,000 rows
-
-### **5. Build Optimizations**
-```typescript
-// vite.config.ts
-export default defineConfig({
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'monaco': ['@monaco-editor/react'],
-          'vendor': ['react', 'react-dom'],
-        },
+// vite.config.ts - Manual chunk splitting
+build: {
+  rollupOptions: {
+    output: {
+      manualChunks: {
+        'monaco': ['@monaco-editor/react', 'monaco-editor'],
+        'vendor': ['react', 'react-dom', 'react-redux'],
+        'table': ['@tanstack/react-table'],
+        'ui': ['lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
       },
     },
   },
-})
+}
 ```
-- **Tree-shaking**: Removed unused Radix UI components
-- **Minification**: Terser with aggressive optimizations
-- **Compression**: Brotli compression on Vercel
+- Separates Monaco editor into own chunk (loaded lazily)
+- Vendor chunk for React core (cached by browser)
+- UI components in separate chunk for better caching
+- Enables parallel downloads and efficient browser caching
 
 ---
 
@@ -166,11 +168,10 @@ export default defineConfig({
 - Auto-saves in Redux state
 
 ### **4. Results Table**
-- **Sorting**: Click column headers
+- **Sorting**: Click column headers (ascending/descending)
 - **Pagination**: 25/50/100/200 rows per page
-- **Virtual Scrolling**: Smooth rendering of large datasets
-- **Column Resizing**: Drag column borders
-- **Search**: Filter across all columns
+- **Search**: Real-time filter across all columns
+- **Horizontal Scroll**: Handles wide tables gracefully
 - **Export**: CSV or JSON download
 
 ### **5. Keyboard Shortcuts**
@@ -242,18 +243,19 @@ export default defineConfig({
 
 ---
 
-## 🧪 Testing Large Datasets
+## 🧪 Handling Large Datasets
 
-**Stress Test Results:**
-| Rows | Load Time | Memory Usage | Scroll FPS | Notes |
-|------|-----------|--------------|------------|-------|
-| 100 | 20ms | 2 MB | 60 | Instant |
-| 1,000 | 80ms | 8 MB | 60 | Smooth |
-| 10,000 | 350ms | 30 MB | 60 | Virtual scrolling essential |
-| 50,000 | 1.8s | 120 MB | 58-60 | Slight jank on initial render |
-| 100,000 | 4.2s | 250 MB | 55-60 | Browser stable, no crash |
+The application uses **pagination** to handle large query results:
 
-**Conclusion:** ✅ **Can render 100,000 rows without crashing** thanks to TanStack Virtual.
+- Default: 25 rows per page
+- Options: 25, 50, 100, 200 rows per page
+- Client-side pagination with instant page switching
+- Search/filter operates on full dataset (not just visible page)
+
+**Dataset Included:**
+- Northwind database with ~1,500 total records across 11 tables
+- Largest table (order_details): 2,155 rows
+- Pagination ensures smooth performance regardless of result size
 
 ---
 
