@@ -88,13 +88,13 @@ function App() {
 
       {/* Main Content */}
       <ResizablePanelGroup direction="vertical" className="flex-1">
-        <ResizablePanel defaultSize={60} minSize={30}>
+        <ResizablePanel defaultSize={30} minSize={30}>
           <Editor />
         </ResizablePanel>
 
         <ResizableHandle withHandle className="bg-border hover:bg-accent transition-colors" />
 
-        <ResizablePanel defaultSize={40} minSize={20}>
+        <ResizablePanel defaultSize={70} minSize={20}>
           <ResultsTable />
         </ResizablePanel>
       </ResizablePanelGroup>
